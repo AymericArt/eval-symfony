@@ -1,0 +1,7 @@
+product_list:
+  path: /
+  controller: App\Controller\ProductController::listAction
+
+product_view:
+  path: /{categorySlug}/{productSlug}/{id}
+  controller: App\Controller\ProductController::viewAction

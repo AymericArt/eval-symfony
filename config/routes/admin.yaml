@@ -1,0 +1,27 @@
+admin_product_add:
+  path: /admin/ajouter-le-produit
+  controller: App\Controller\AdminController::productAction
+
+admin_product_edit:
+  path: /admin/editer-le-produit/{productSlug}/{id}
+  controller: App\Controller\AdminController::productAction
+
+admin_category_add:
+  path: /admin/ajouter-la-categorie
+  controller: App\Controller\AdminController::categoryAction
+
+admin_category_edit:
+  path: /admin/editer-la-categorie/{categorySlug}/{id}
+  controller: App\Controller\AdminController::categoryAction
+
+admin_user_add:
+  path: /admin/ajouter-un-utilisateur/id
+  controller: App\Controller\AdminController::userAction
+
+admin_user_list:
+  path: /admin/utilisateurs
+  controller: App\Controller\AdminController::usersListAction
+
+admin_user_edit:
+  path: /admin/editer-un-utilisateur/{id}
+  controller: App\Controller\AdminController::userAction

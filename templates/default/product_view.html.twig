@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}"{{ product.name }}" pour notre évaluation.{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <div class="d-flex">
+        <div class="col-5">
+            {% if product.image %}
+                <img class="card-img-top" src="{{ vich_uploader_asset(product, 'imageFile') }}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="https://anokha.world/images/not-found.png" alt="Card image cap">
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">Catégorie: {{ product.category.name }}</p>
+            <p class="card-text">Prix: {{ product.price|format_currency('EUR') }}</p>
+
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF') %}
+                <div class="">
+                    <a href="{{ path('admin_product_edit', {'productSlug': product.slug, 'id': product.id}) }}" class="btn btn-info">Editer le produit</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

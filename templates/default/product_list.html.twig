@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evaluation PHP/Symfony Aymeric Art{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-around flex-wrap p-2 col-12">
+        {% if products %}
+            {% for product in products %}
+                <div class="card col-md-3 col-xs-12 m-2">
+                    {% if product.image %}
+                        <img class="card-img-top" src="{{ vich_uploader_asset(product, 'imageFile') }}" alt="Card image cap">
+                    {% else %}
+                        <img class="card-img-top" src="https://anokha.world/images/not-found.png" alt="Card image cap">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">Catégorie: {{ product.category.name }}</p>
+                        <p class="card-text">Catégorie description: {{ product.category.description }}</p>
+                        <p class="card-text">Prix: {{ product.price|format_currency('EUR') }}</p>
+
+                        <div class="d-flex justify-content-center m-2">
+                            <a href="{{ path('product_view', {'categorySlug': product.category.slug, 'productSlug': product.slug, 'id': product.id}) }}" class="btn btn-primary">Voir le produit</a>
+                        </div>
+                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF') %}
+                            <div class="d-flex justify-content-center m-2">
+                                <a href="{{ path('admin_product_edit', {'productSlug': product.slug, 'id': product.id}) }}" class="btn btn-info">Editer le produit</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            Aucun produit en stock pour le moment.
+        {% endif %}
+
+    </div>
+
+{% endblock %}
