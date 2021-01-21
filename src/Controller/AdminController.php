@@ -15,6 +15,7 @@ use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminController extends AbstractController
 {
@@ -92,21 +93,35 @@ class AdminController extends AbstractController
     /**
      * @param Request $request
      * @param User|null $user
+     * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
      *
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function userAction(Request $request, ?User $user): Response
+    public function userAction(Request $request, ?User $user, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $userInstance = $user ?? new User();
 
         $form = $this->createForm(UserFormType::class, $userInstance);
-        $form->handleRequest($request);
 
+        if ($user) {
+            $form->remove('plainPassword');
+        }
+
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $message = $user ? 'Votre utilisateur à été correctement modifié' : 'Votre utilisateur à été correctement crée';
+            if ($userInstance) {
+                $userInstance->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $userInstance,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+            }
+
+                $message = $user ? 'Votre utilisateur à été correctement modifié' : 'Votre utilisateur à été correctement crée';
             $this->addFlash('success', $message);
 
             $userInstance->setRoles($form->get('roles')->getData());
@@ -117,7 +132,8 @@ class AdminController extends AbstractController
         }
 
         return $this->render('admin/user.html.twig', [
-            'form' => $form->createView()
+            'form'      => $form->createView(),
+            'isCreated' => $user
         ]);
     }
 

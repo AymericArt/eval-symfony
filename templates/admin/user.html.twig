@@ -11,8 +11,10 @@
             </div>
 
             {{ form_row(form.email) }}
-            {{ form_row(form.password) }}
             {{ form_row(form.roles) }}
+                {% if not isCreated %}
+                    {{ form_row(form.plainPassword) }}
+                {% endif %}
 
             <div class="d-flex justify-content-center m-5">
                 <button type="submit" class="btn btn-success">Créer</button>
